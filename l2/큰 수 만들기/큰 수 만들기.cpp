@@ -1,45 +1,36 @@
 #include <string>
 #include <vector>
+#include <stack>
 #include <algorithm>
 
 using namespace std;
-const int MAX = 1000000;
-
-string n="";
-int len;
-bool arr[MAX+1][10];
-int 
-string number_string;
-
-string madeInt(){
-    string answer="";
-    for(int i=0;i<len;i++){
-        if(!arr[number_string[i]-'0']) answer += number_string[i];
-    }
-    
-    return answer;
-}
-
-void back(int cnt,int k){
-    if(k == cnt){
-        string m = madeInt();
-        if(n < m ) n = m;
-        return;
-    }
-    
-    for(int i=0;i<len;i++){
-        if(arr[i]) continue;
-        arr[i] = 1;
-        back(cnt+1,k);
-        arr[i] = 0;
-    }
-}
 
 string solution(string number, int k) {
-    number_string = number;
-    len = number.length();
+    string answer = "";
+    int ssize = number.length() - k;
+    int len = number.length();
     
-    back(0,k);
+    stack<char> arr;
+    for(int i=0;i<len;i++){
+        char a = number[i];
+        while(!arr.empty() && k > 0){
+            char top = arr.top();
+            if(top < a){
+                arr.pop();
+                k--;
+            }
+            else break;
+        }
+        arr.push(a);
+    }
     
-    return n;
+    while(ssize != arr.size()) arr.pop();
+    while(!arr.empty()){
+        answer += arr.top();
+        arr.pop();
+    }
+    
+    reverse(answer.begin(),answer.end());
+    
+    return answer;
 }
