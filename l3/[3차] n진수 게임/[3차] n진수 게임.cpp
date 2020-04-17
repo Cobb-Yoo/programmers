@@ -1,31 +1,34 @@
 #include <string>
 #include <vector>
+#include <stack>
 using namespace std;
 
+stack<char> s;
+
+void f(int n, int a){
+    if(a == 0) return s.push(char('0'));
+    int tmp = a;
+    while(tmp > 0){
+        int k = tmp % n;
+        k > 9 ? s.push(char('A'+k-10)) : s.push(char('0' + k));
+        tmp /= n;
+    }
+}
+
 string solution(int n, int t, int m, int p) {
-	vector <char> temp;
-	string answer = "";
-	int cnt = 0; 
-	int turn = 1; 
-	temp.push_back('0');
-	if (m == p)
-		p = 0;
-	while (turn <= t * m) {
-		int N = cnt;
-		while (N > 0) {
-			if (N % n >= 10)
-				temp.push_back((char)(N % n + 55));
-			else 
-				temp.push_back((char)(N % n + 48));
-			N /= n;
-		}
-		int s = temp.size();
-		for (int i = 0; i < s; i++, turn++) {
-			if ((turn % m == p) && (answer.length() < t))
-				answer += temp.back();
-			temp.pop_back();
-		}
-		cnt++;
-	}
-	return answer;
+    string answer = "";
+    
+    int cnt = 1;
+    int num = 0;
+    while(answer.size() < t){
+        f(n, num++);
+        
+        for(int i=0;!s.empty() && answer.size() != t;i++){
+            if(cnt == p) answer += s.top();
+            s.pop();
+            cnt++;
+            if(cnt > m) cnt = 1;
+        }
+    }
+    return answer;
 }
